@@ -1,4 +1,5 @@
 from types import MethodType, FunctionType
+from typing import Any, Callable
 
 
 class TestClass:
@@ -6,17 +7,27 @@ class TestClass:
         pass
 
 
-class MethodImplementation:  # TODO
-    pass
+class MethodImplementation:
+    def __init__(self, func: Callable, instance: object, /) -> None:
+        self.__func__ = func
+        self.__self__ = instance
+
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, type(self)):
+            return other.__func__ == self.__func__ and other.__self__ == self.__self__
+        else:
+            return NotImplemented
+
+    def __call__(self, /, *args, **kwargs) -> Any:
+        return self.__func__(self.__self__, *args, **kwargs)
 
 
 if __name__ == "__main__":
     a = TestClass()
-
-    assert a.method != TestClass.method  # a.method is a MethodType object, and TestClass.method is a function
+    assert a.method != TestClass.method  # a.method is not eqyiyalent to TestClass.method
     assert isinstance(a.method, MethodType)  # a.method is an instance of types.MethodType
     assert isinstance(TestClass.method, FunctionType)  # TestClass.method is an instance of FunctionType
-    assert a.method is not a.method  # function`s __get__ recalculates it every time, so these two methods are equal, but not identical.
+    assert a.method is not a.method  #a.method is not stored anywhere, it is always created dynamically, so these two methods are equal, but not identical.
 
     assert a.method.__func__ is TestClass.method  # the __func__ attribute stores the function
     assert a.method.__self__ is a  # the __self__ attribute stores the instance
