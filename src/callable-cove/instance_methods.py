@@ -8,6 +8,9 @@ class TestClass:
 
 
 class MethodImplementation:
+    """
+    A possible implementation of MethodType.
+    """
     def __init__(self, func: Callable, instance: object, /) -> None:
         self.__func__ = func
         self.__self__ = instance
@@ -24,10 +27,11 @@ class MethodImplementation:
 
 if __name__ == "__main__":
     a = TestClass()
+
     assert a.method != TestClass.method  # a.method is not eqyiyalent to TestClass.method
     assert isinstance(a.method, MethodType)  # a.method is an instance of types.MethodType
     assert isinstance(TestClass.method, FunctionType)  # TestClass.method is an instance of FunctionType
-    assert a.method is not a.method  #a.method is not stored anywhere, it is always created dynamically, so these two methods are equal, but not identical.
+    assert a.method is not a.method  # a.method is not stored anywhere, it is always created dynamically, so these two methods are equal, but not identical.
 
     assert a.method.__func__ is TestClass.method  # the __func__ attribute stores the function
     assert a.method.__self__ is a  # the __self__ attribute stores the instance
